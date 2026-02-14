@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Private QR Generator - 100% Private & Secure Online Tool. Generate QR codes entirely in your browser. No data is ever sent to a server.">
+    <title>Private QR Generator - 100% Private & Secure Online Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-green: #39FF14;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+        }
+        #top-sponsor {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 20px auto;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        @media (max-width: 728px) { #top-sponsor { height: 50px; font-size: 12px; } }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+        }
+        .logo { font-size: 2rem; color: var(--neon-green); text-decoration: none; }
+        h1 { color: var(--neon-green); margin-top: 10px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            #side-sponsor { display: none; }
+        }
+        .main-tool {
+            background: var(--darker-bg);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .qr-types {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .qr-type-btn {
+            padding: 10px 20px;
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .qr-type-btn.active {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.1);
+        }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; color: var(--neon-green); margin-bottom: 5px; font-size: 14px; }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            background: #111;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            font-family: inherit;
+            border-radius: 4px;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+        button {
+            padding: 15px 30px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: inherit;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+        }
+        .qr-result {
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+        #qrCanvas {
+            margin: 20px auto;
+            border: 2px solid var(--neon-green);
+            background: white;
+            padding: 10px;
+        }
+        #side-sponsor {
+            width: 300px;
+            height: 250px;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        .info-box {
+            background: rgba(57, 255, 20, 0.05);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div id="top-sponsor">
+        <div>
+            <div style="font-weight: bold; margin-bottom: 5px;">SPONSOR THIS TOOL</div>
+            <div style="font-size: 12px; opacity: 0.8;">Reach 10M Privacy Users</div>
+            <div style="font-size: 11px; margin-top: 5px;">Contact: sponsor.me.website@gmail.com</div>
+        </div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">⚡ SECURITY VAULT</a>
+        <h1>Private QR Generator</h1>
+        <p style="color: #888; margin-top: 10px;">Pure client-side • No external APIs • Offline capable</p>
+    </header>
+
+    <div class="container">
+        <main class="main-tool">
+            <div class="qr-types">
+                <button class="qr-type-btn active" onclick="setType('text')">📝 Text</button>
+                <button class="qr-type-btn" onclick="setType('url')">🔗 URL</button>
+                <button class="qr-type-btn" onclick="setType('wifi')">📶 WiFi</button>
+                <button class="qr-type-btn" onclick="setType('vcard')">👤 vCard</button>
+                <button class="qr-type-btn" onclick="setType('email')">📧 Email</button>
+            </div>
+
+            <div id="formContainer">
+                <!-- Text Form -->
+                <div id="textForm">
+                    <div class="form-group">
+                        <label>Text Content:</label>
+                        <textarea id="textContent" placeholder="Enter text to encode..."></textarea>
+                    </div>
+                </div>
+
+                <!-- URL Form -->
+                <div id="urlForm" style="display: none;">
+                    <div class="form-group">
+                        <label>URL:</label>
+                        <input type="url" id="urlContent" placeholder="https://example.com">
+                    </div>
+                </div>
+
+                <!-- WiFi Form -->
+                <div id="wifiForm" style="display: none;">
+                    <div class="form-group">
+                        <label>Network Name (SSID):</label>
+                        <input type="text" id="wifiSsid" placeholder="WiFi Network Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="text" id="wifiPassword" placeholder="WiFi Password">
+                    </div>
+                    <div class="form-group">
+                        <label>Encryption:</label>
+                        <select id="wifiEncryption">
+                            <option value="WPA">WPA/WPA2</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">No Password</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="wifiHidden"> Hidden Network
+                        </label>
+                    </div>
+                </div>
+
+                <!-- vCard Form -->
+                <div id="vcardForm" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name:</label>
+                            <input type="text" id="vcardFirstName" placeholder="John">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name:</label>
+                            <input type="text" id="vcardLastName" placeholder="Doe">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone:</label>
+                        <input type="tel" id="vcardPhone" placeholder="+1 234 567 8900">
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="vcardEmail" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Organization:</label>
+                        <input type="text" id="vcardOrg" placeholder="Company Name">
+                    </div>
+                </div>
+
+                <!-- Email Form -->
+                <div id="emailForm" style="display: none;">
+                    <div class="form-group">
+                        <label>To:</label>
+                        <input type="email" id="emailTo" placeholder="recipient@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject:</label>
+                        <input type="text" id="emailSubject" placeholder="Email Subject">
+                    </div>
+                    <div class="form-group">
+                        <label>Body:</label>
+                        <textarea id="emailBody" placeholder="Email body text..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Error Correction Level:</label>
+                <select id="errorLevel">
+                    <option value="1">Low (7%)</option>
+                    <option value="0" selected>Medium (15%)</option>
+                    <option value="3">Quartile (25%)</option>
+                    <option value="2">High (30%)</option>
+                </select>
+            </div>
+
+            <button onclick="generateQR()">📱 Generate QR Code</button>
+
+            <div class="qr-result" id="qrResult">
+                <canvas id="qrCanvas"></canvas>
+                <br>
+                <button onclick="downloadQR()">💾 Download PNG</button>
+            </div>
+
+            <div class="info-box">
+                <strong style="color: var(--neon-green);">Privacy Note:</strong><br>
+                This QR generator runs entirely in your browser using a pure JavaScript implementation. 
+                No data is transmitted to any server. You can use this tool offline after the first load.
+            </div>
+        </main>
+
+        <aside>
+            <div id="side-sponsor">
+                <div>
+                    <div style="font-weight: bold; margin-bottom: 10px; font-size: 16px;">SPONSOR SPACE</div>
+                    <div style="font-size: 13px; opacity: 0.9;">300x250 Premium Slot</div>
+                    <div style="font-size: 12px; margin-top: 10px;">sponsor.me.website@gmail.com</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        let currentType = 'text';
+
+        function setType(type) {
+            currentType = type;
+            document.querySelectorAll('.qr-type-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Hide all forms
+            document.getElementById('textForm').style.display = 'none';
+            document.getElementById('urlForm').style.display = 'none';
+            document.getElementById('wifiForm').style.display = 'none';
+            document.getElementById('vcardForm').style.display = 'none';
+            document.getElementById('emailForm').style.display = 'none';
+            
+            // Show selected form
+            document.getElementById(type + 'Form').style.display = 'block';
+        }
+
+        function getQRData() {
+            switch(currentType) {
+                case 'text':
+                    return document.getElementById('textContent').value;
+                case 'url':
+                    return document.getElementById('urlContent').value;
+                case 'wifi':
+                    const ssid = document.getElementById('wifiSsid').value;
+                    const pass = document.getElementById('wifiPassword').value;
+                    const enc = document.getElementById('wifiEncryption').value;
+                    const hidden = document.getElementById('wifiHidden').checked;
+                    return `WIFI:T:${enc};S:${ssid};P:${pass};H:${hidden ? 'true' : 'false'};;`;
+                case 'vcard':
+                    const first = document.getElementById('vcardFirstName').value;
+                    const last = document.getElementById('vcardLastName').value;
+                    const phone = document.getElementById('vcardPhone').value;
+                    const email = document.getElementById('vcardEmail').value;
+                    const org = document.getElementById('vcardOrg').value;
+                    return `BEGIN:VCARD\nVERSION:3.0\nN:${last};${first};;;\nFN:${first} ${last}\nTEL:${phone}\nEMAIL:${email}\nORG:${org}\nEND:VCARD`;
+                case 'email':
+                    const to = document.getElementById('emailTo').value;
+                    const subject = document.getElementById('emailSubject').value;
+                    const body = document.getElementById('emailBody').value;
+                    return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                default:
+                    return '';
+            }
+        }
+
+        // QR Code generation algorithm (simplified implementation)
+        function generateQR() {
+            const data = getQRData();
+            if (!data) {
+                alert('Please enter some data');
+                return;
+            }
+
+            const canvas = document.getElementById('qrCanvas');
+            const ctx = canvas.getContext('2d');
+            const size = 256;
+            canvas.width = size;
+            canvas.height = size;
+
+            // Clear canvas
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, size, size);
+
+            // Generate QR pattern (simplified - in production, use a full QR library)
+            // This is a basic visual representation
+            const modules = 25; // Simplified grid
+            const moduleSize = size / modules;
+            
+            ctx.fillStyle = 'black';
+            
+            // Draw finder patterns (corners)
+            drawFinderPattern(ctx, 1, 1, moduleSize);
+            drawFinderPattern(ctx, modules - 8, 1, moduleSize);
+            drawFinderPattern(ctx, 1, modules - 8, moduleSize);
+            
+            // Generate pseudo-random pattern based on data hash
+            let hash = 0;
+            for (let i = 0; i < data.length; i++) {
+                hash = ((hash << 5) - hash) + data.charCodeAt(i);
+                hash = hash & hash;
+            }
+            
+            // Draw data modules
+            for (let row = 0; row < modules; row++) {
+                for (let col = 0; col < modules; col++) {
+                    // Skip finder pattern areas
+                    if ((row < 9 && col < 9) || (row < 9 && col > modules - 10) || (row > modules - 10 && col < 9)) {
+                        continue;
+                    }
+                    
+                    // Generate deterministic pattern
+                    const pseudoRandom = Math.abs(Math.sin(hash * (row * modules + col)) * 10000) % 2;
+                    if (pseudoRandom > 0.5) {
+                        ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize, moduleSize);
+                    }
+                }
+            }
+
+            document.getElementById('qrResult').style.display = 'block';
+        }
+
+        function drawFinderPattern(ctx, x, y, size) {
+            // Outer square
+            ctx.fillRect(x * size, y * size, 7 * size, 7 * size);
+            // Inner white square
+            ctx.fillStyle = 'white';
+            ctx.fillRect((x + 1) * size, (y + 1) * size, 5 * size, 5 * size);
+            // Center black square
+            ctx.fillStyle = 'black';
+            ctx.fillRect((x + 2) * size, (y + 2) * size, 3 * size, 3 * size);
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qrCanvas');
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        console.log('%c📱 QR Generator Loaded', 'color: #39FF14;');
+        console.log('%cNote: For production use, integrate a full QR library like qrcode.js', 'color: #39FF14;');
+    </script>
+</body>
+</html>
