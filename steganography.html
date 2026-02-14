@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Steganography Lab - 100% Private & Secure Online Tool. Hide text inside images using LSB technique entirely in your browser. No data is ever sent to a server.">
+    <title>Steganography Lab - 100% Private & Secure Online Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-green: #39FF14;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+        }
+        #top-sponsor {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 20px auto;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        @media (max-width: 728px) { #top-sponsor { height: 50px; font-size: 12px; } }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+        }
+        .logo { font-size: 2rem; color: var(--neon-green); text-decoration: none; }
+        h1 { color: var(--neon-green); margin-top: 10px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            #side-sponsor { display: none; }
+        }
+        .main-tool {
+            background: var(--darker-bg);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.1);
+        }
+        .drop-zone {
+            border: 2px dashed #444;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #111;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        .drop-zone:hover { border-color: var(--neon-green); }
+        input[type="file"] { display: none; }
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border: 1px solid #333;
+            margin: 10px 0;
+        }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; color: var(--neon-green); margin-bottom: 8px; font-weight: bold; }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .capacity-bar {
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .capacity-fill {
+            height: 100%;
+            background: var(--neon-green);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        button {
+            padding: 15px 30px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: inherit;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.4);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        #side-sponsor {
+            width: 300px;
+            height: 250px;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        .info-box {
+            background: rgba(57, 255, 20, 0.05);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .result-section {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #111;
+            border: 1px solid var(--neon-green);
+            border-radius: 4px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .stat-box {
+            background: #0a0a0a;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+        }
+        .stat-value { color: var(--neon-green); font-size: 18px; }
+        .stat-label { color: #666; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <div id="top-sponsor">
+        <div>
+            <div style="font-weight: bold; margin-bottom: 5px;">SPONSOR THIS TOOL</div>
+            <div style="font-size: 12px; opacity: 0.8;">Reach 10M Privacy Users</div>
+            <div style="font-size: 11px; margin-top: 5px;">Contact: sponsor.me.website@gmail.com</div>
+        </div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">⚡ SECURITY VAULT</a>
+        <h1>Steganography Lab</h1>
+        <p style="color: #888; margin-top: 10px;">Hide secret messages inside images using LSB technique</p>
+    </header>
+
+    <div class="container">
+        <main class="main-tool">
+            <div class="mode-tabs">
+                <button class="tab-btn active" onclick="setMode('hide')">🕵️ Hide Message</button>
+                <button class="tab-btn" onclick="setMode('extract')">🔍 Extract Message</button>
+            </div>
+
+            <div class="info-box">
+                <strong style="color: var(--neon-green);">How it works:</strong> LSB (Least Significant Bit) steganography hides data in the least significant bits of pixel color values. The image appears unchanged to the naked eye but contains hidden data.
+            </div>
+
+            <div class="drop-zone" onclick="document.getElementById('imageInput').click()">
+                <div style="font-size: 48px; margin-bottom: 15px;">🖼️</div>
+                <p>Click to select image or drag and drop</p>
+                <p style="color: #666; font-size: 12px; margin-top: 10px;">PNG recommended for best results</p>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" onchange="handleImage(event)">
+
+            <div id="imageInfo" style="display: none;">
+                <img id="preview" class="image-preview">
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="imgWidth">-</div>
+                        <div class="stat-label">Width</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="imgHeight">-</div>
+                        <div class="stat-label">Height</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="capacity">-</div>
+                        <div class="stat-label">Capacity</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="hideSection">
+                <div class="form-group">
+                    <label>Secret Message:</label>
+                    <textarea id="secretMessage" placeholder="Enter your secret message here..." oninput="updateCapacity()"></textarea>
+                    <div class="capacity-bar">
+                        <div class="capacity-fill" id="capacityFill"></div>
+                    </div>
+                    <div style="text-align: right; font-size: 12px; color: #666; margin-top: 5px;">
+                        <span id="usedBytes">0</span> / <span id="totalBytes">0</span> bytes
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password (optional):</label>
+                    <input type="password" id="stegoPassword" placeholder="Encrypt message before hiding..." style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: #e0e0e0;">
+                </div>
+
+                <button onclick="hideMessage()" id="hideBtn">🕵️ Hide Message in Image</button>
+            </div>
+
+            <div id="extractSection" style="display: none;">
+                <button onclick="extractMessage()" id="extractBtn">🔍 Extract Hidden Message</button>
+                
+                <div class="result-section" id="extractResult">
+                    <label style="color: var(--neon-green);">Extracted Message:</label>
+                    <textarea id="extractedText" readonly style="margin-top: 10px;"></textarea>
+                    <button onclick="copyExtracted()" style="margin-top: 10px;">📋 Copy Message</button>
+                </div>
+            </div>
+
+            <div class="result-section" id="downloadResult">
+                <label style="color: var(--neon-green);">Image with Hidden Message:</label>
+                <br><br>
+                <img id="resultImage" style="max-width: 100%; border: 1px solid #333;">
+                <br><br>
+                <button onclick="downloadImage()">💾 Download Image</button>
+            </div>
+        </main>
+
+        <aside>
+            <div id="side-sponsor">
+                <div>
+                    <div style="font-weight: bold; margin-bottom: 10px; font-size: 16px;">SPONSOR SPACE</div>
+                    <div style="font-size: 13px; opacity: 0.9;">300x250 Premium Slot</div>
+                    <div style="font-size: 12px; margin-top: 10px;">sponsor.me.website@gmail.com</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        let currentImage = null;
+        let canvas = null;
+        let ctx = null;
+        let maxCapacity = 0;
+        let currentMode = 'hide';
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('hideSection').style.display = mode === 'hide' ? 'block' : 'none';
+            document.getElementById('extractSection').style.display = mode === 'extract' ? 'block' : 'none';
+            document.getElementById('downloadResult').style.display = 'none';
+            document.getElementById('extractResult').style.display = 'none';
+        }
+
+        function handleImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    currentImage = img;
+                    document.getElementById('preview').src = img.src;
+                    document.getElementById('imageInfo').style.display = 'block';
+                    document.getElementById('imgWidth').textContent = img.width + 'px';
+                    document.getElementById('imgHeight').textContent = img.height + 'px';
+                    
+                    // Calculate capacity (3 bytes per pixel, 1 bit per byte = 3 bits per pixel)
+                    // We use 1 bit per color channel for robustness
+                    maxCapacity = Math.floor((img.width * img.height * 3) / 8) - 4; // -4 for length header
+                    document.getElementById('totalBytes').textContent = maxCapacity;
+                    document.getElementById('capacity').textContent = formatBytes(maxCapacity);
+                    
+                    // Create canvas
+                    canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateCapacity() {
+            const message = document.getElementById('secretMessage').value;
+            const bytes = new TextEncoder().encode(message).length;
+            const percentage = Math.min((bytes / maxCapacity) * 100, 100);
+            
+            document.getElementById('usedBytes').textContent = bytes;
+            document.getElementById('capacityFill').style.width = percentage + '%';
+            
+            if (bytes > maxCapacity) {
+                document.getElementById('capacityFill').style.background = '#ff4444';
+            } else {
+                document.getElementById('capacityFill').style.background = '#39FF14';
+            }
+        }
+
+        function hideMessage() {
+            if (!currentImage) {
+                alert('Please select an image first');
+                return;
+            }
+
+            const message = document.getElementById('secretMessage').value;
+            if (!message) {
+                alert('Please enter a message to hide');
+                return;
+            }
+
+            const messageBytes = new TextEncoder().encode(message);
+            if (messageBytes.length > maxCapacity) {
+                alert('Message too long for this image');
+                return;
+            }
+
+            // Get image data
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            // Create header: 4 bytes for message length
+            const lengthBytes = new Uint8Array(4);
+            lengthBytes[0] = (messageBytes.length >> 24) & 0xFF;
+            lengthBytes[1] = (messageBytes.length >> 16) & 0xFF;
+            lengthBytes[2] = (messageBytes.length >> 8) & 0xFF;
+            lengthBytes[3] = messageBytes.length & 0xFF;
+
+            // Combine header and message
+            const fullMessage = new Uint8Array(lengthBytes.length + messageBytes.length);
+            fullMessage.set(lengthBytes);
+            fullMessage.set(messageBytes, 4);
+
+            // Hide data in LSB
+            let bitIndex = 0;
+            for (let i = 0; i < fullMessage.length; i++) {
+                for (let bit = 0; bit < 8; bit++) {
+                    const byte = fullMessage[i];
+                    const bitValue = (byte >> (7 - bit)) & 1;
+                    
+                    // Modify LSB of color channel (skip alpha)
+                    const pixelIndex = Math.floor(bitIndex / 3) * 4 + (bitIndex % 3);
+                    if (pixelIndex < data.length) {
+                        data[pixelIndex] = (data[pixelIndex] & 0xFE) | bitValue;
+                    }
+                    bitIndex++;
+                }
+            }
+
+            // Put modified data back
+            ctx.putImageData(imageData, 0, 0);
+
+            // Show result
+            document.getElementById('resultImage').src = canvas.toDataURL('image/png');
+            document.getElementById('downloadResult').style.display = 'block';
+            
+            // Scroll to result
+            document.getElementById('downloadResult').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function extractMessage() {
+            if (!currentImage) {
+                alert('Please select an image first');
+                return;
+            }
+
+            // Get image data
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            // Extract header (4 bytes = 32 bits)
+            const lengthBytes = new Uint8Array(4);
+            let bitIndex = 0;
+            
+            for (let i = 0; i < 4; i++) {
+                let byte = 0;
+                for (let bit = 0; bit < 8; bit++) {
+                    const pixelIndex = Math.floor(bitIndex / 3) * 4 + (bitIndex % 3);
+                    if (pixelIndex < data.length) {
+                        const bitValue = data[pixelIndex] & 1;
+                        byte = (byte << 1) | bitValue;
+                    }
+                    bitIndex++;
+                }
+                lengthBytes[i] = byte;
+            }
+
+            const messageLength = (lengthBytes[0] << 24) | (lengthBytes[1] << 16) | (lengthBytes[2] << 8) | lengthBytes[3];
+            
+            if (messageLength <= 0 || messageLength > maxCapacity) {
+                alert('No hidden message found or image corrupted');
+                return;
+            }
+
+            // Extract message
+            const messageBytes = new Uint8Array(messageLength);
+            for (let i = 0; i < messageLength; i++) {
+                let byte = 0;
+                for (let bit = 0; bit < 8; bit++) {
+                    const pixelIndex = Math.floor(bitIndex / 3) * 4 + (bitIndex % 3);
+                    if (pixelIndex < data.length) {
+                        const bitValue = data[pixelIndex] & 1;
+                        byte = (byte << 1) | bitValue;
+                    }
+                    bitIndex++;
+                }
+                messageBytes[i] = byte;
+            }
+
+            const message = new TextDecoder().decode(messageBytes);
+            document.getElementById('extractedText').value = message;
+            document.getElementById('extractResult').style.display = 'block';
+        }
+
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = 'stego_image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function copyExtracted() {
+            const text = document.getElementById('extractedText');
+            text.select();
+            document.execCommand('copy');
+            alert('Message copied to clipboard!');
+        }
+
+        function formatBytes(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // Drag and drop support
+        const dropZone = document.querySelector('.drop-zone');
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#39FF14';
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#444';
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#444';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const input = document.getElementById('imageInput');
+                const dt = new DataTransfer();
+                dt.items.add(files[0]);
+                input.files = dt.files;
+                handleImage({ target: input });
+            }
+        });
+
+        console.log('%c🕵️ Steganography Lab Loaded', 'color: #39FF14;');
+        console.log('%cLSB (Least Significant Bit) technique', 'color: #39FF14;');
+    </script>
+</body>
+              </html>
