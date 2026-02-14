@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Security Vault - Zero-Knowledge Privacy Tools
+# All tools are client-side only, no backend APIs
+
+Sitemap: https://Jiban70.github.io/security-vault-static/sitemap.xml
+
+# Disallow crawling of any potential query parameters
+Disallow: /*?
+
+# Allow all static assets
+Allow: /*.html$
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.svg$
