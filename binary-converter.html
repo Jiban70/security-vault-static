@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Binary Converter - 100% Private & Secure Online Tool. Text-to-Binary security tool entirely in your browser. No data is ever sent to a server.">
+    <title>Binary Converter - 100% Private & Secure Online Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-green: #39FF14;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+        }
+        #top-sponsor {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 20px auto;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        @media (max-width: 728px) { #top-sponsor { height: 50px; font-size: 12px; } }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+        }
+        .logo { font-size: 2rem; color: var(--neon-green); text-decoration: none; }
+        h1 { color: var(--neon-green); margin-top: 10px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            #side-sponsor { display: none; }
+        }
+        .main-tool {
+            background: var(--darker-bg);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.1);
+        }
+        .converter-box {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        @media (max-width: 768px) { .converter-box { grid-template-columns: 1fr; } }
+        .io-panel {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .panel-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-label { color: var(--neon-green); font-weight: bold; font-size: 14px; }
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            outline: none;
+        }
+        .arrow-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--neon-green);
+        }
+        @media (max-width: 768px) { .arrow-box { transform: rotate(90deg); } }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 12px 25px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #111;
+            border-radius: 4px;
+        }
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--neon-green);
+        }
+        select {
+            padding: 8px;
+            background: #0a0a0a;
+            border: 1px solid #444;
+            color: #e0e0e0;
+            font-family: inherit;
+        }
+        #side-sponsor {
+            width: 300px;
+            height: 250px;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        .bit-visualizer {
+            margin-top: 20px;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .byte-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+            padding: 5px;
+            background: rgba(57, 255, 20, 0.05);
+        }
+        .byte-char {
+            color: var(--neon-green);
+            min-width: 30px;
+        }
+        .byte-bits {
+            color: #888;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="top-sponsor">
+        <div>
+            <div style="font-weight: bold; margin-bottom: 5px;">SPONSOR THIS TOOL</div>
+            <div style="font-size: 12px; opacity: 0.8;">Reach 10M Privacy Users</div>
+            <div style="font-size: 11px; margin-top: 5px;">Contact: sponsor.me.website@gmail.com</div>
+        </div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">⚡ SECURITY VAULT</a>
+        <h1>Binary Converter</h1>
+        <p style="color: #888; margin-top: 10px;">Text ↔ Binary ↔ Hex ↔ Octal ↔ Decimal</p>
+    </header>
+
+    <div class="container">
+        <main class="main-tool">
+            <div class="mode-tabs">
+                <button class="tab-btn active" onclick="setMode('text-binary')">Text ↔ Binary</button>
+                <button class="tab-btn" onclick="setMode('hex-binary')">Hex ↔ Binary</button>
+                <button class="tab-btn" onclick="setMode('decimal-binary')">Decimal ↔ Binary</button>
+                <button class="tab-btn" onclick="setMode('octal-binary')">Octal ↔ Binary</button>
+            </div>
+
+            <div class="options">
+                <div class="option-group">
+                    <input type="checkbox" id="groupBits" checked>
+                    <label for="groupBits" style="font-size: 13px;">Group by 8 bits</label>
+                </div>
+                <div class="option-group">
+                    <input type="checkbox" id="showPrefix">
+                    <label for="showPrefix" style="font-size: 13px;">Show 0b prefix</label>
+                </div>
+                <div class="option-group">
+                    <input type="checkbox" id="spaceBetween">
+                    <label for="spaceBetween" style="font-size: 13px;">Space between bytes</label>
+                </div>
+                <div class="option-group">
+                    <label style="font-size: 13px;">Encoding:</label>
+                    <select id="encoding">
+                        <option value="utf-8">UTF-8</option>
+                        <option value="ascii">ASCII</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="converter-box">
+                <div class="io-panel">
+                    <div class="panel-header">
+                        <span class="panel-label" id="inputLabel">Text Input</span>
+                        <button style="padding: 5px 10px; font-size: 11px;" onclick="clearInput()">Clear</button>
+                    </div>
+                    <textarea id="input" placeholder="Enter text here..."></textarea>
+                </div>
+                
+                <div class="arrow-box">⇄</div>
+                
+                <div class="io-panel">
+                    <div class="panel-header">
+                        <span class="panel-label" id="outputLabel">Binary Output</span>
+                        <button style="padding: 5px 10px; font-size: 11px;" onclick="copyOutput()">Copy</button>
+                    </div>
+                    <textarea id="output" readonly placeholder="Binary output will appear here..."></textarea>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button onclick="convert()">Convert</button>
+                <button onclick="swap()">Swap</button>
+                <button onclick="downloadResult()">Download</button>
+            </div>
+
+            <div class="bit-visualizer" id="visualizer" style="display: none;">
+                <strong style="color: var(--neon-green);">Bit-level visualization:</strong>
+                <div id="visualizerContent"></div>
+            </div>
+        </main>
+
+        <aside>
+            <div id="side-sponsor">
+                <div>
+                    <div style="font-weight: bold; margin-bottom: 10px; font-size: 16px;">SPONSOR SPACE</div>
+                    <div style="font-size: 13px; opacity: 0.9;">300x250 Premium Slot</div>
+                    <div style="font-size: 12px; margin-top: 10px;">sponsor.me.website@gmail.com</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        let currentMode = 'text-binary';
+        let isReversed = false;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const labels = {
+                'text-binary': ['Text Input', 'Binary Output'],
+                'hex-binary': ['Hex Input', 'Binary Output'],
+                'decimal-binary': ['Decimal Input', 'Binary Output'],
+                'octal-binary': ['Octal Input', 'Binary Output']
+            };
+            
+            document.getElementById('inputLabel').textContent = labels[mode][0];
+            document.getElementById('outputLabel').textContent = labels[mode][1];
+            
+            isReversed = false;
+            clearInput();
+        }
+
+        function convert() {
+            const input = document.getElementById('input').value.trim();
+            if (!input) return;
+
+            const groupBits = document.getElementById('groupBits').checked;
+            const showPrefix = document.getElementById('showPrefix').checked;
+            const spaceBetween = document.getElementById('spaceBetween').checked;
+            const encoding = document.getElementById('encoding').value;
+
+            let output = '';
+            const visualizer = document.getElementById('visualizer');
+            const visContent = document.getElementById('visualizerContent');
+
+            try {
+                if (isReversed) {
+                    // Binary to other format
+                    output = binaryToOther(input, currentMode);
+                } else {
+                    // Other format to binary
+                    switch(currentMode) {
+                        case 'text-binary':
+                            output = textToBinary(input, encoding, groupBits, spaceBetween);
+                            visualizeText(input, encoding);
+                            break;
+                        case 'hex-binary':
+                            output = hexToBinary(input, groupBits, spaceBetween);
+                            break;
+                        case 'decimal-binary':
+                            output = decimalToBinary(input, groupBits, spaceBetween);
+                            break;
+                        case 'octal-binary':
+                            output = octalToBinary(input, groupBits, spaceBetween);
+                            break;
+                    }
+                }
+
+                if (showPrefix && !isReversed && currentMode !== 'text-binary') {
+                    output = '0b ' + output;
+                }
+
+                document.getElementById('output').value = output;
+                
+            } catch (e) {
+                alert('Conversion error: ' + e.message);
+            }
+        }
+
+        function textToBinary(text, encoding, groupBits, spaceBetween) {
+            const encoder = new TextEncoder();
+            const bytes = encoder.encode(text);
+            let binary = '';
+            
+            for (let i = 0; i < bytes.length; i++) {
+                let bits = bytes[i].toString(2).padStart(8, '0');
+                if (groupBits) {
+                    binary += bits;
+                    if (spaceBetween && i < bytes.length - 1) binary += ' ';
+                } else {
+                    binary += bits;
+                }
+            }
+            
+            return binary;
+        }
+
+        function binaryToOther(binary, mode) {
+            // Remove spaces and prefix
+            binary = binary.replace(/\s/g, '').replace(/^0b/, '');
+            
+            // Validate binary
+            if (!/^[01]+$/.test(binary)) {
+                throw new Error('Invalid binary string');
+            }
+
+            const bytes = [];
+            for (let i = 0; i < binary.length; i += 8) {
+                const byte = binary.substr(i, 8).padEnd(8, '0');
+                bytes.push(parseInt(byte, 2));
+            }
+
+            switch(mode) {
+                case 'text-binary':
+                    return new TextDecoder().decode(new Uint8Array(bytes));
+                case 'hex-binary':
+                    return bytes.map(b => b.toString(16).padStart(2, '0')).join(' ');
+                case 'decimal-binary':
+                    return bytes.join(' ');
+                case 'octal-binary':
+                    return bytes.map(b => b.toString(8).padStart(3, '0')).join(' ');
+            }
+        }
+
+        function hexToBinary(hex, groupBits, spaceBetween) {
+            hex = hex.replace(/\s/g, '');
+            let binary = '';
+            for (let i = 0; i < hex.length; i += 2) {
+                const byte = parseInt(hex.substr(i, 2), 16);
+                binary += byte.toString(2).padStart(8, '0');
+                if (spaceBetween && i < hex.length - 2) binary += ' ';
+            }
+            return binary;
+        }
+
+        function decimalToBinary(decimal, groupBits, spaceBetween) {
+            const nums = decimal.split(/\s+/);
+            let binary = '';
+            for (let i = 0; i < nums.length; i++) {
+                const byte = parseInt(nums[i], 10);
+                if (byte > 255) throw new Error('Decimal value must be 0-255');
+                binary += byte.toString(2).padStart(8, '0');
+                if (spaceBetween && i < nums.length - 1) binary += ' ';
+            }
+            return binary;
+        }
+
+        function octalToBinary(octal, groupBits, spaceBetween) {
+            const nums = octal.split(/\s+/);
+            let binary = '';
+            for (let i = 0; i < nums.length; i++) {
+                const byte = parseInt(nums[i], 8);
+                binary += byte.toString(2).padStart(8, '0');
+                if (spaceBetween && i < nums.length - 1) binary += ' ';
+            }
+            return binary;
+        }
+
+        function visualizeText(text, encoding) {
+            const encoder = new TextEncoder();
+            const bytes = encoder.encode(text);
+            const vis = document.getElementById('visualizer');
+            const content = document.getElementById('visualizerContent');
+            
+            let html = '';
+            for (let i = 0; i < Math.min(bytes.length, 20); i++) {
+                const char = text[i] || ' ';
+                const bits = bytes[i].toString(2).padStart(8, '0');
+                html += `<div class="byte-row">
+                    <span class="byte-char">'${char}'</span>
+                    <span class="byte-bits">${bits}</span>
+                    <span style="color: #666;">(${bytes[i]})</span>
+                </div>`;
+            }
+            
+            if (bytes.length > 20) {
+                html += `<div style="color: #666; text-align: center; margin-top: 10px;">... and ${bytes.length - 20} more bytes</div>`;
+            }
+            
+            content.innerHTML = html;
+            vis.style.display = 'block';
+        }
+
+        function swap() {
+            const input = document.getElementById('input');
+            const output = document.getElementById('output');
+            const temp = input.value;
+            input.value = output.value;
+            output.value = temp;
+            isReversed = !isReversed;
+            
+            // Swap labels
+            const inputLabel = document.getElementById('inputLabel').textContent;
+            const outputLabel = document.getElementById('outputLabel').textContent;
+            document.getElementById('inputLabel').textContent = outputLabel;
+            document.getElementById('outputLabel').textContent = inputLabel;
+        }
+
+        function clearInput() {
+            document.getElementById('input').value = '';
+            document.getElementById('output').value = '';
+            document.getElementById('visualizer').style.display = 'none';
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('output');
+            output.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+
+        function downloadResult() {
+            const output = document.getElementById('output').value;
+            if (!output) return;
+            
+            const blob = new Blob([output], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'binary_output.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        console.log('%c⚙️ Binary Converter Loaded', 'color: #39FF14;');
+    </script>
+</body>
+              </html>
