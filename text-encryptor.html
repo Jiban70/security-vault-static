@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AES-256 Text Encryptor - 100% Private & Secure Online Tool. Perform text encryption entirely in your browser. No data is ever sent to a server.">
+    <title>AES-256 Text Encryptor - 100% Private & Secure Online Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-green: #39FF14;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+        }
+        #top-sponsor {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 20px auto;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        @media (max-width: 728px) { #top-sponsor { height: 50px; font-size: 12px; } }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+        }
+        .logo { font-size: 2rem; color: var(--neon-green); text-decoration: none; }
+        h1 { color: var(--neon-green); margin-top: 10px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            #side-sponsor { display: none; }
+        }
+        .main-tool {
+            background: var(--darker-bg);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: var(--neon-green); margin-bottom: 8px; font-weight: bold; }
+        textarea, input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 14px;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        textarea { min-height: 120px; }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: inherit;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .output-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            word-break: break-all;
+            font-size: 13px;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .status.success { background: rgba(57, 255, 20, 0.1); border: 1px solid var(--neon-green); color: var(--neon-green); }
+        .status.error { background: rgba(255, 0, 0, 0.1); border: 1px solid #ff4444; color: #ff4444; }
+        #side-sponsor {
+            width: 300px;
+            height: 250px;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        .info-box {
+            background: rgba(57, 255, 20, 0.05);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .copy-btn {
+            margin-top: 10px;
+            padding: 8px 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="top-sponsor">
+        <div>
+            <div style="font-weight: bold; margin-bottom: 5px;">SPONSOR THIS TOOL</div>
+            <div style="font-size: 12px; opacity: 0.8;">Reach 10M Privacy Users</div>
+            <div style="font-size: 11px; margin-top: 5px;">Contact: sponsor.me.website@gmail.com</div>
+        </div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">⚡ SECURITY VAULT</a>
+        <h1>AES-256 Text Encryptor</h1>
+        <p style="color: #888; margin-top: 10px;">PBKDF2 + AES-GCM • 100,000 Iterations • Client-Side Only</p>
+    </header>
+
+    <div class="container">
+        <main class="main-tool">
+            <div class="form-group">
+                <label for="plaintext">Plaintext / Ciphertext:</label>
+                <textarea id="plaintext" placeholder="Enter text to encrypt or paste encrypted data to decrypt..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter strong password (min 8 characters recommended)...">
+            </div>
+
+            <div class="btn-group">
+                <button onclick="encryptText()" id="encryptBtn">🔐 Encrypt</button>
+                <button onclick="decryptText()" id="decryptBtn">🔓 Decrypt</button>
+            </div>
+
+            <div id="status" class="status" style="display: none;"></div>
+
+            <div id="outputContainer" style="display: none;">
+                <label>Result:</label>
+                <div class="output-box" id="output"></div>
+                <button class="copy-btn" onclick="copyOutput()">📋 Copy to Clipboard</button>
+                <button class="copy-btn" onclick="downloadOutput()">💾 Download as File</button>
+            </div>
+
+            <div class="info-box">
+                <strong style="color: var(--neon-green);">Technical Specifications:</strong><br>
+                • Algorithm: AES-256-GCM (Authenticated Encryption)<br>
+                • Key Derivation: PBKDF2 with SHA-256<br>
+                • Iterations: 100,000 (OWASP recommended)<br>
+                • Salt: 16 bytes (128-bit) random<br>
+                • IV: 12 bytes (96-bit) random per encryption<br>
+                • Output Format: Base64(salt + iv + ciphertext + authTag)
+            </div>
+        </main>
+
+        <aside>
+            <div id="side-sponsor">
+                <div>
+                    <div style="font-weight: bold; margin-bottom: 10px; font-size: 16px;">SPONSOR SPACE</div>
+                    <div style="font-size: 13px; opacity: 0.9;">300x250 Premium Slot</div>
+                    <div style="font-size: 12px; margin-top: 10px;">sponsor.me.website@gmail.com</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Utility: Convert ArrayBuffer to Base64
+        function arrayBufferToBase64(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        // Utility: Convert Base64 to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binary = atob(base64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Show status message
+        function showStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + (isError ? 'error' : 'success');
+            status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 5000);
+        }
+
+        // Encrypt function using PBKDF2 + AES-GCM
+        async function encryptText() {
+            const plaintext = document.getElementById('plaintext').value;
+            const password = document.getElementById('password').value;
+            const encryptBtn = document.getElementById('encryptBtn');
+
+            if (!plaintext) {
+                showStatus('Please enter text to encrypt', true);
+                return;
+            }
+            if (!password) {
+                showStatus('Please enter a password', true);
+                return;
+            }
+
+            encryptBtn.disabled = true;
+            encryptBtn.textContent = 'Encrypting...';
+
+            try {
+                // Step 1: Generate random salt (16 bytes)
+                const salt = window.crypto.getRandomValues(new Uint8Array(16));
+                
+                // Step 2: Generate random IV (12 bytes for GCM)
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                
+                // Step 3: Import password as key material
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(password);
+                const keyMaterial = await window.crypto.subtle.importKey(
+                    'raw',
+                    passwordData,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveKey']
+                );
+                
+                // Step 4: Derive AES key using PBKDF2 (100k iterations)
+                const key = await window.crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt']
+                );
+                
+                // Step 5: Encrypt the plaintext
+                const plaintextData = encoder.encode(plaintext);
+                const ciphertext = await window.crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    plaintextData
+                );
+                
+                // Step 6: Combine salt + iv + ciphertext and encode as Base64
+                const result = new Uint8Array(salt.length + iv.length + ciphertext.byteLength);
+                result.set(salt, 0);
+                result.set(iv, salt.length);
+                result.set(new Uint8Array(ciphertext), salt.length + iv.length);
+                
+                const base64Result = arrayBufferToBase64(result);
+                
+                document.getElementById('output').textContent = base64Result;
+                document.getElementById('outputContainer').style.display = 'block';
+                showStatus('✅ Encryption successful! Store the password securely - it cannot be recovered.');
+                
+            } catch (error) {
+                console.error('Encryption error:', error);
+                showStatus('❌ Encryption failed: ' + error.message, true);
+            } finally {
+                encryptBtn.disabled = false;
+                encryptBtn.textContent = '🔐 Encrypt';
+            }
+        }
+
+        // Decrypt function
+        async function decryptText() {
+            const ciphertext = document.getElementById('plaintext').value.trim();
+            const password = document.getElementById('password').value;
+            const decryptBtn = document.getElementById('decryptBtn');
+
+            if (!ciphertext) {
+                showStatus('Please enter encrypted text to decrypt', true);
+                return;
+            }
+            if (!password) {
+                showStatus('Please enter the password', true);
+                return;
+            }
+
+            decryptBtn.disabled = true;
+            decryptBtn.textContent = 'Decrypting...';
+
+            try {
+                // Step 1: Decode Base64
+                const encryptedData = new Uint8Array(base64ToArrayBuffer(ciphertext));
+                
+                // Step 2: Extract salt (16 bytes), iv (12 bytes), and ciphertext
+                if (encryptedData.length < 28) {
+                    throw new Error('Invalid encrypted data format');
+                }
+                
+                const salt = encryptedData.slice(0, 16);
+                const iv = encryptedData.slice(16, 28);
+                const ciphertextBytes = encryptedData.slice(28);
+                
+                // Step 3: Import password and derive key (same as encryption)
+                const encoder = new TextEncoder();
+                const passwordData = encoder.encode(password);
+                const keyMaterial = await window.crypto.subtle.importKey(
+                    'raw',
+                    passwordData,
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveKey']
+                );
+                
+                const key = await window.crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['decrypt']
+                );
+                
+                // Step 4: Decrypt
+                const decryptedData = await window.crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    ciphertextBytes
+                );
+                
+                const decoder = new TextDecoder();
+                const plaintext = decoder.decode(decryptedData);
+                
+                document.getElementById('output').textContent = plaintext;
+                document.getElementById('outputContainer').style.display = 'block';
+                showStatus('✅ Decryption successful!');
+                
+            } catch (error) {
+                console.error('Decryption error:', error);
+                if (error.name === 'OperationError') {
+                    showStatus('❌ Decryption failed: Wrong password or corrupted data', true);
+                } else {
+                    showStatus('❌ Decryption failed: ' + error.message, true);
+                }
+            } finally {
+                decryptBtn.disabled = false;
+                decryptBtn.textContent = '🔓 Decrypt';
+            }
+        }
+
+        // Copy output to clipboard
+        async function copyOutput() {
+            const output = document.getElementById('output').textContent;
+            try {
+                await navigator.clipboard.writeText(output);
+                showStatus('✅ Copied to clipboard!');
+            } catch (err) {
+                showStatus('❌ Failed to copy', true);
+            }
+        }
+
+        // Download output as file
+        function downloadOutput() {
+            const output = document.getElementById('output').textContent;
+            const blob = new Blob([output], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'encrypted-message.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showStatus('✅ File downloaded!');
+        }
+
+        // Security verification on load
+        console.log('%c🔐 AES-256 Encryptor Loaded', 'color: #39FF14; font-size: 16px;');
+        console.log('%cAlgorithm: AES-256-GCM with PBKDF2 (100k iterations)', 'color: #39FF14;');
+    </script>
+</body>
+  </html>
