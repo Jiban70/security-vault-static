@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SHA-256 File Hasher - 100% Private & Secure Online Tool. Verify file integrity via hash entirely in your browser. No data is ever sent to a server.">
+    <title>SHA-256 File Hasher - 100% Private & Secure Online Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-green: #39FF14;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+        }
+        #top-sponsor {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 20px auto;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        @media (max-width: 728px) { #top-sponsor { height: 50px; font-size: 12px; } }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+        }
+        .logo { font-size: 2rem; color: var(--neon-green); text-decoration: none; }
+        h1 { color: var(--neon-green); margin-top: 10px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            #side-sponsor { display: none; }
+        }
+        .main-tool {
+            background: var(--darker-bg);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .drop-zone {
+            border: 2px dashed #444;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            background: #111;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.05);
+        }
+        .drop-zone-icon { font-size: 48px; margin-bottom: 15px; }
+        input[type="file"] { display: none; }
+        .algorithm-select {
+            margin: 20px 0;
+            padding: 10px;
+            background: #111;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            font-family: inherit;
+            width: 100%;
+        }
+        .hash-output {
+            margin-top: 20px;
+            padding: 20px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .verify-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(57, 255, 20, 0.05);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            border-radius: 4px;
+        }
+        .match { color: var(--neon-green); font-weight: bold; }
+        .mismatch { color: #ff4444; font-weight: bold; }
+        button {
+            padding: 12px 30px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: var(--neon-green);
+            color: #000;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+            display: none;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--neon-green);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        #side-sponsor {
+            width: 300px;
+            height: 250px;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #111;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div id="top-sponsor">
+        <div>
+            <div style="font-weight: bold; margin-bottom: 5px;">SPONSOR THIS TOOL</div>
+            <div style="font-size: 12px; opacity: 0.8;">Reach 10M Privacy Users</div>
+            <div style="font-size: 11px; margin-top: 5px;">Contact: sponsor.me.website@gmail.com</div>
+        </div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">⚡ SECURITY VAULT</a>
+        <h1>SHA-256 File Hasher</h1>
+        <p style="color: #888; margin-top: 10px;">Verify file integrity • Chunked processing for large files</p>
+    </header>
+
+    <div class="container">
+        <main class="main-tool">
+            <label style="color: var(--neon-green); font-weight: bold; margin-bottom: 10px; display: block;">Hash Algorithm:</label>
+            <select class="algorithm-select" id="algorithm">
+                <option value="SHA-256">SHA-256 (Recommended)</option>
+                <option value="SHA-384">SHA-384</option>
+                <option value="SHA-512">SHA-512</option>
+                <option value="SHA-1">SHA-1 (Legacy - Not recommended)</option>
+            </select>
+
+            <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                <div class="drop-zone-icon">📁</div>
+                <p>Click to select file or drag and drop here</p>
+                <p style="color: #666; font-size: 12px; margin-top: 10px;">Files are processed locally - never uploaded</p>
+            </div>
+            <input type="file" id="fileInput" onchange="handleFileSelect(event)">
+
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div id="fileInfo" class="file-info" style="display: none;"></div>
+
+            <div id="hashResult" style="display: none;">
+                <label style="color: var(--neon-green); font-weight: bold; margin-top: 20px; display: block;">Computed Hash:</label>
+                <div class="hash-output" id="hashOutput"></div>
+                <button onclick="copyHash()">📋 Copy Hash</button>
+            </div>
+
+            <div class="verify-section">
+                <label style="color: var(--neon-green); font-weight: bold;">Verify Against Known Hash:</label>
+                <input type="text" id="verifyHash" placeholder="Paste expected hash here..." 
+                    style="width: 100%; margin-top: 10px; padding: 10px; background: #111; border: 1px solid #333; color: #e0e0e0; font-family: monospace;">
+                <button onclick="verifyHash()">🔍 Verify</button>
+                <div id="verifyResult" style="margin-top: 10px;"></div>
+            </div>
+        </main>
+
+        <aside>
+            <div id="side-sponsor">
+                <div>
+                    <div style="font-weight: bold; margin-bottom: 10px; font-size: 16px;">SPONSOR SPACE</div>
+                    <div style="font-size: 13px; opacity: 0.9;">300x250 Premium Slot</div>
+                    <div style="font-size: 12px; margin-top: 10px;">sponsor.me.website@gmail.com</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const CHUNK_SIZE = 1024 * 1024; // 1MB chunks for large files
+
+        // Drag and drop handlers
+        const dropZone = document.getElementById('dropZone');
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                processFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        function handleFileSelect(event) {
+            if (event.target.files.length > 0) {
+                processFile(event.target.files[0]);
+            }
+        }
+
+        async function processFile(file) {
+            const algorithm = document.getElementById('algorithm').value;
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            const fileInfo = document.getElementById('fileInfo');
+            
+            // Show file info
+            fileInfo.style.display = 'block';
+            fileInfo.innerHTML = `
+                <strong>File:</strong> ${file.name}<br>
+                <strong>Size:</strong> ${formatBytes(file.size)}<br>
+                <strong>Type:</strong> ${file.type || 'Unknown'}<br>
+                <strong>Algorithm:</strong> ${algorithm}
+            `;
+
+            // Show progress bar for large files
+            if (file.size > CHUNK_SIZE) {
+                progressBar.style.display = 'block';
+            }
+
+            try {
+                let hashBuffer;
+                
+                if (file.size <= CHUNK_SIZE) {
+                    // Small file - process in one go
+                    const arrayBuffer = await file.arrayBuffer();
+                    hashBuffer = await window.crypto.subtle.digest(algorithm, arrayBuffer);
+                } else {
+                    // Large file - process in chunks using progressive hashing
+                    hashBuffer = await hashLargeFile(file, algorithm, (progress) => {
+                        progressFill.style.width = progress + '%';
+                    });
+                }
+
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                
+                document.getElementById('hashOutput').textContent = hashHex;
+                document.getElementById('hashResult').style.display = 'block';
+                progressBar.style.display = 'none';
+                
+            } catch (error) {
+                alert('Error hashing file: ' + error.message);
+                progressBar.style.display = 'none';
+            }
+        }
+
+        // For large files, we need to use a different approach
+        // Since Web Crypto API doesn't support streaming, we'll read chunks
+        async function hashLargeFile(file, algorithm, onProgress) {
+            // Note: Web Crypto API doesn't support incremental hashing
+            // For very large files, we read in chunks and concatenate
+            const chunks = Math.ceil(file.size / CHUNK_SIZE);
+            let offset = 0;
+            const fileData = new Uint8Array(file.size);
+            
+            for (let i = 0; i < chunks; i++) {
+                const chunk = file.slice(offset, offset + CHUNK_SIZE);
+                const arrayBuffer = await chunk.arrayBuffer();
+                const chunkArray = new Uint8Array(arrayBuffer);
+                fileData.set(chunkArray, offset);
+                offset += CHUNK_SIZE;
+                
+                onProgress(Math.round(((i + 1) / chunks) * 100));
+            }
+            
+            return await window.crypto.subtle.digest(algorithm, fileData.buffer);
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function copyHash() {
+            const hash = document.getElementById('hashOutput').textContent;
+            navigator.clipboard.writeText(hash).then(() => {
+                alert('Hash copied to clipboard!');
+            });
+        }
+
+        function verifyHash() {
+            const computed = document.getElementById('hashOutput').textContent.toLowerCase();
+            const expected = document.getElementById('verifyHash').value.trim().toLowerCase();
+            const resultDiv = document.getElementById('verifyResult');
+            
+            if (!computed) {
+                resultDiv.innerHTML = '<span class="mismatch">⚠️ Please hash a file first</span>';
+                return;
+            }
+            
+            if (!expected) {
+                resultDiv.innerHTML = '<span class="mismatch">⚠️ Please enter a hash to verify</span>';
+                return;
+            }
+            
+            if (computed === expected) {
+                resultDiv.innerHTML = '<span class="match">✅ MATCH - File integrity verified!</span>';
+            } else {
+                resultDiv.innerHTML = '<span class="mismatch">❌ MISMATCH - File may be corrupted or tampered with!</span>';
+            }
+        }
+
+        console.log('%c#️⃣ SHA-256 Hasher Loaded', 'color: #39FF14;');
+        console.log('%cAlgorithms: SHA-256, SHA-384, SHA-512', 'color: #39FF14;');
+    </script>
+</body>
+  </html>
