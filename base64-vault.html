@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Base64 Vault - 100% Private & Secure Online Tool. Obfuscate text instantly entirely in your browser. No data is ever sent to a server.">
+    <title>Base64 Vault - 100% Private & Secure Online Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-green: #39FF14;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+        }
+        #top-sponsor {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 20px auto;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        @media (max-width: 728px) { #top-sponsor { height: 50px; font-size: 12px; } }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+        }
+        .logo { font-size: 2rem; color: var(--neon-green); text-decoration: none; }
+        h1 { color: var(--neon-green); margin-top: 10px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            #side-sponsor { display: none; }
+        }
+        .main-tool {
+            background: var(--darker-bg);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .encoding-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.1);
+        }
+        .io-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) { .io-container { grid-template-columns: 1fr; } }
+        .io-box {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .io-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .io-label { color: var(--neon-green); font-weight: bold; font-size: 14px; }
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            outline: none;
+        }
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+        }
+        .icon-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            border: 1px solid #444;
+            flex: none;
+        }
+        .icon-btn:hover {
+            background: #333;
+            color: var(--neon-green);
+            box-shadow: none;
+        }
+        #side-sponsor {
+            width: 300px;
+            height: 250px;
+            border: 2px solid var(--neon-green);
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .stat-box {
+            background: #111;
+            padding: 15px;
+            text-align: center;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+        .stat-value { color: var(--neon-green); font-size: 20px; font-weight: bold; }
+        .stat-label { color: #666; font-size: 11px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div id="top-sponsor">
+        <div>
+            <div style="font-weight: bold; margin-bottom: 5px;">SPONSOR THIS TOOL</div>
+            <div style="font-size: 12px; opacity: 0.8;">Reach 10M Privacy Users</div>
+            <div style="font-size: 11px; margin-top: 5px;">Contact: sponsor.me.website@gmail.com</div>
+        </div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">⚡ SECURITY VAULT</a>
+        <h1>Base64 Vault</h1>
+        <p style="color: #888; margin-top: 10px;">Base64 • Base64URL • Base32 • Hex • Binary</p>
+    </header>
+
+    <div class="container">
+        <main class="main-tool">
+            <div class="encoding-tabs">
+                <button class="tab-btn active" onclick="setEncoding('base64')">Base64</button>
+                <button class="tab-btn" onclick="setEncoding('base64url')">Base64URL</button>
+                <button class="tab-btn" onclick="setEncoding('base32')">Base32</button>
+                <button class="tab-btn" onclick="setEncoding('hex')">Hex</button>
+                <button class="tab-btn" onclick="setEncoding('binary')">Binary</button>
+            </div>
+
+            <div class="io-container">
+                <div class="io-box">
+                    <div class="io-header">
+                        <span class="io-label">Input (Text)</span>
+                        <button class="icon-btn" onclick="clearInput()">Clear</button>
+                    </div>
+                    <textarea id="input" placeholder="Enter text to encode..."></textarea>
+                </div>
+                <div class="io-box">
+                    <div class="io-header">
+                        <span class="io-label" id="outputLabel">Base64 Output</span>
+                        <button class="icon-btn" onclick="copyOutput()">Copy</button>
+                    </div>
+                    <textarea id="output" placeholder="Encoded output will appear here..." readonly></textarea>
+                </div>
+            </div>
+
+            <div class="action-btns">
+                <button onclick="encode()">🔒 Encode</button>
+                <button onclick="decode()">🔓 Decode</button>
+                <button onclick="swap()">⇄ Swap</button>
+            </div>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="inputChars">0</div>
+                    <div class="stat-label">Input Chars</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="outputChars">0</div>
+                    <div class="stat-label">Output Chars</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="ratio">0%</div>
+                    <div class="stat-label">Size Ratio</div>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div id="side-sponsor">
+                <div>
+                    <div style="font-weight: bold; margin-bottom: 10px; font-size: 16px;">SPONSOR SPACE</div>
+                    <div style="font-size: 13px; opacity: 0.9;">300x250 Premium Slot</div>
+                    <div style="font-size: 12px; margin-top: 10px;">sponsor.me.website@gmail.com</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        let currentEncoding = 'base64';
+
+        const base32Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
+        function setEncoding(type) {
+            currentEncoding = type;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('outputLabel').textContent = type.charAt(0).toUpperCase() + type.slice(1) + ' Output';
+            updateStats();
+        }
+
+        function encode() {
+            const input = document.getElementById('input').value;
+            if (!input) return;
+
+            let output = '';
+            try {
+                switch(currentEncoding) {
+                    case 'base64':
+                        output = btoa(unescape(encodeURIComponent(input)));
+                        break;
+                    case 'base64url':
+                        output = btoa(unescape(encodeURIComponent(input)))
+                            .replace(/\+/g, '-')
+                            .replace(/\//g, '_')
+                            .replace(/=/g, '');
+                        break;
+                    case 'base32':
+                        output = toBase32(input);
+                        break;
+                    case 'hex':
+                        output = toHex(input);
+                        break;
+                    case 'binary':
+                        output = toBinary(input);
+                        break;
+                }
+                document.getElementById('output').value = output;
+            } catch (e) {
+                alert('Encoding error: ' + e.message);
+            }
+            updateStats();
+        }
+
+        function decode() {
+            const input = document.getElementById('input').value;
+            if (!input) return;
+
+            let output = '';
+            try {
+                switch(currentEncoding) {
+                    case 'base64':
+                        output = decodeURIComponent(escape(atob(input)));
+                        break;
+                    case 'base64url':
+                        let padding = '';
+                        const padLen = 4 - (input.length % 4);
+                        if (padLen !== 4) padding = '='.repeat(padLen);
+                        const base64 = input.replace(/-/g, '+').replace(/_/g, '/') + padding;
+                        output = decodeURIComponent(escape(atob(base64)));
+                        break;
+                    case 'base32':
+                        output = fromBase32(input);
+                        break;
+                    case 'hex':
+                        output = fromHex(input);
+                        break;
+                    case 'binary':
+                        output = fromBinary(input);
+                        break;
+                }
+                document.getElementById('output').value = output;
+            } catch (e) {
+                alert('Decoding error: Invalid input format');
+            }
+            updateStats();
+        }
+
+        function toBase32(str) {
+            const bytes = new TextEncoder().encode(str);
+            let output = '';
+            let bits = 0;
+            let value = 0;
+            
+            for (let i = 0; i < bytes.length; i++) {
+                value = (value << 8) | bytes[i];
+                bits += 8;
+                while (bits >= 5) {
+                    output += base32Alphabet[(value >>> (bits - 5)) & 31];
+                    bits -= 5;
+                }
+            }
+            
+            if (bits > 0) {
+                output += base32Alphabet[(value << (5 - bits)) & 31];
+            }
+            
+            // Add padding
+            while (output.length % 8 !== 0) {
+                output += '=';
+            }
+            
+            return output;
+        }
+
+        function fromBase32(str) {
+            const clean = str.replace(/=+$/, '').toUpperCase();
+            let bits = 0;
+            let value = 0;
+            const bytes = [];
+            
+            for (let i = 0; i < clean.length; i++) {
+                const val = base32Alphabet.indexOf(clean[i]);
+                if (val === -1) continue;
+                
+                value = (value << 5) | val;
+                bits += 5;
+                
+                if (bits >= 8) {
+                    bytes.push((value >>> (bits - 8)) & 255);
+                    bits -= 8;
+                }
+            }
+            
+            return new TextDecoder().decode(new Uint8Array(bytes));
+        }
+
+        function toHex(str) {
+            return Array.from(new TextEncoder().encode(str))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+        }
+
+        function fromHex(hex) {
+            const bytes = [];
+            for (let i = 0; i < hex.length; i += 2) {
+                bytes.push(parseInt(hex.substr(i, 2), 16));
+            }
+            return new TextDecoder().decode(new Uint8Array(bytes));
+        }
+
+        function toBinary(str) {
+            return Array.from(new TextEncoder().encode(str))
+                .map(b => b.toString(2).padStart(8, '0'))
+                .join(' ');
+        }
+
+        function fromBinary(bin) {
+            const bytes = bin.replace(/\s/g, '').match(/.{8}/g) || [];
+            const arr = bytes.map(b => parseInt(b, 2));
+            return new TextDecoder().decode(new Uint8Array(arr));
+        }
+
+        function swap() {
+            const input = document.getElementById('input');
+            const output = document.getElementById('output');
+            const temp = input.value;
+            input.value = output.value;
+            output.value = temp;
+            updateStats();
+        }
+
+        function clearInput() {
+            document.getElementById('input').value = '';
+            document.getElementById('output').value = '';
+            updateStats();
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('output');
+            output.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+
+        function updateStats() {
+            const inputLen = document.getElementById('input').value.length;
+            const outputLen = document.getElementById('output').value.length;
+            const ratio = inputLen > 0 ? Math.round((outputLen / inputLen) * 100) : 0;
+            
+            document.getElementById('inputChars').textContent = inputLen;
+            document.getElementById('outputChars').textContent = outputLen;
+            document.getElementById('ratio').textContent = ratio + '%';
+        }
+
+        document.getElementById('input').addEventListener('input', updateStats);
+
+        console.log('%c🔢 Base64 Vault Loaded', 'color: #39FF14;');
+    </script>
+</body>
+</html>
